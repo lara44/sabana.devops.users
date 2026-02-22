@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => "Microservices users DevOps!");
 app.MapGet("/health", () => "Healthy");
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.MapControllers();
 
