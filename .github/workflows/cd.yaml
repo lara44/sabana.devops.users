@@ -1,0 +1,41 @@
+name: sabana.devops.users .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore sabana.devops.users.sln
+      
+    - name: Build
+      run: dotnet build sabana.devops.users.sln --no-restore --configuration Release
+      
+    - name: Test
+      run: dotnet test sabana.devops.users.sln --no-build --verbosity normal --configuration Release
+
+    - name: Login to Docker Hub
+      if: github.ref == 'refs/heads/main'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      if: github.ref == 'refs/heads/main'
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/sabana-devops-users:latest .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/sabana-devops-users:latest
