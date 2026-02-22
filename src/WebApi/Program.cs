@@ -1,6 +1,7 @@
 using Scalar.AspNetCore;
 using Application;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference(); // UI moderna para ver tus APIs
 }
+
+app.MapGet("/", () => "Microservices users DevOps!");
 
 app.UseHttpsRedirection();
 
