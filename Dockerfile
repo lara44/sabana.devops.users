@@ -26,7 +26,7 @@ WORKDIR /app
 
 # Exponer puertos
 EXPOSE 8080
-EXPOSE 8081
+ENV ASPNETCORE_URLS=http://+:8080
 
 # Copiar archivos publicados desde la etapa de build
 COPY --from=build /app/publish .
