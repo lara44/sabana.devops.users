@@ -1,6 +1,7 @@
 using Scalar.AspNetCore;
 using Application;
 using Infrastructure;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 
+app.UseHttpMetrics();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -26,6 +29,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => "Microservices users DevOps!");
 app.MapGet("/health", () => "Healthy");
+app.MapMetrics();
 
 
 app.MapControllers();

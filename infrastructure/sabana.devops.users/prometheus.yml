@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'sabana-users-api'
+    static_configs:
+      # host.docker.internal resuelve al host desde dentro del contenedor
+      # Para servicio k8s NodePort (8080 -> 30082)
+      - targets: ['host.docker.internal:30082']
+    metrics_path: /metrics
+    scheme: http
