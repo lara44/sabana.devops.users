@@ -34,24 +34,35 @@ jobs:
 
     # ── SONAR: Begin ──────────────────────────────
     - name: SonarCloud - Begin analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         dotnet sonarscanner begin \
           /k:"lara44_sabana.devops.users" \
           /o:"lara44" \
           /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+          /d:sonar.token="$SONAR_TOKEN" \
           /d:sonar.scanner.skipJreProvisioning=true \
           /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
     - name: Build
       run: dotnet build sabana.devops.users.sln --no-restore --no-incremental --configuration Release
 
+    # ── TEST + COBERTURA ──────────────────────────
     - name: Test
-      run: dotnet test sabana.devops.users.sln --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage;Format=opencover"
+      run: |
+        dotnet test sabana.devops.users.sln \
+          --no-build \
+          --verbosity normal \
+          --configuration Release \
+          --collect:"XPlat Code Coverage" \
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
     # ── SONAR: End ────────────────────────────────
     - name: SonarCloud - End analysis
-      run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 
     # ── SNYK ──────────────────────────────────────
     - name: Snyk - Security scan
