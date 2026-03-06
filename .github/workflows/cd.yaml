@@ -40,13 +40,14 @@ jobs:
           /o:"lara44" \
           /d:sonar.host.url="https://sonarcloud.io" \
           /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-          /d:sonar.scanner.skipJreProvisioning=true
+          /d:sonar.scanner.skipJreProvisioning=true \
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
     - name: Build
       run: dotnet build sabana.devops.users.sln --no-restore --no-incremental --configuration Release
 
     - name: Test
-      run: dotnet test sabana.devops.users.sln --no-build --verbosity normal --configuration Release
+      run: dotnet test sabana.devops.users.sln --no-build --verbosity normal --configuration Release --collect:"XPlat Code Coverage;Format=opencover"
 
     # ── SONAR: End ────────────────────────────────
     - name: SonarCloud - End analysis
