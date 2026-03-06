@@ -39,10 +39,11 @@ jobs:
           /k:"lara44_sabana.devops.users" \
           /o:"lara44" \
           /d:sonar.host.url="https://sonarcloud.io" \
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+          /d:sonar.scanner.skipJreProvisioning=true
 
     - name: Build
-      run: dotnet build sabana.devops.users.sln --no-restore --configuration Release
+      run: dotnet build sabana.devops.users.sln --no-restore --no-incremental --configuration Release
 
     - name: Test
       run: dotnet test sabana.devops.users.sln --no-build --verbosity normal --configuration Release
@@ -70,6 +71,8 @@ jobs:
 
     - name: Build and push Docker image
       if: github.ref == 'refs/heads/main'
-      run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/sabana-devops-users:latest .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/sabana-devops-users:latest
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/sabana-devops-users:latest
