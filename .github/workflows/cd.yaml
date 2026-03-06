@@ -66,6 +66,8 @@ jobs:
 
     # ── SNYK ──────────────────────────────────────
     - name: Snyk - Security scan
+      # https://github.com/snyk/actions/commits/master
+      # uses: snyk/actions/dotnet@master
       uses: snyk/actions/dotnet@9adf32b1121593767fc3c057af55b55db032dc04
       continue-on-error: true
       env:
@@ -76,6 +78,8 @@ jobs:
     # ── DOCKER ────────────────────────────────────
     - name: Login to Docker Hub
       if: github.ref == 'refs/heads/main'
+      # https://github.com/docker/login-action/commits/master
+      # uses: docker/login-action@v3
       uses: docker/login-action@db14339dbc0a1f0b184157be94b23a2138122354
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -83,7 +87,10 @@ jobs:
 
     - name: Build and push Docker image
       if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@v5
+      # https://github.com/docker/build-push-action/releases/tag/v5
+      # uses: docker/build-push-action@v5
+      uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25
+      
       with:
         context: .
         push: true
