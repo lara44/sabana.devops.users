@@ -55,7 +55,7 @@ jobs:
 
     # ── SNYK ──────────────────────────────────────
     - name: Snyk - Security scan
-      uses: snyk/actions/dotnet@master
+      uses: snyk/actions/dotnet@9adf32b
       continue-on-error: true
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
